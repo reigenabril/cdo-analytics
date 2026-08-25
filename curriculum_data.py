@@ -6,23 +6,23 @@ Plan 2024 - Co-dictada por Facultad de Informática y Facultad de Ciencias Econ�
 
 AREAS = {
     "Computación": {
-        "color": "#3B82F6",      # Azul
-        "icon": "💻",
+        "color": "#3B82F6",
+        "icon": "",
         "desc": "Algoritmos, software, bases de datos, big data e inteligencia artificial."
     },
     "Matemática": {
-        "color": "#8B5CF6",      # Violeta
-        "icon": "📐",
+        "color": "#8B5CF6",
+        "icon": "",
         "desc": "Cálculo, álgebra lineal, probabilidades, estadística y optimización."
     },
     "Gestión & Negocios": {
-        "color": "#10B981",      # Verde
-        "icon": "📈",
+        "color": "#10B981",
+        "icon": "",
         "desc": "Organizaciones, economía, finanzas, costos, personas y estrategia."
     },
     "General / Profesional": {
-        "color": "#F59E0B",      # Ámbar
-        "icon": "🎯",
+        "color": "#F59E0B",
+        "icon": "",
         "desc": "Idiomas y Práctica Profesional Supervisada (PPS)."
     }
 }
