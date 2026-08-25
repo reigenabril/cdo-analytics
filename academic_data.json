@@ -1,0 +1,111 @@
+{
+  "student_info": {
+    "name": "Abril Reigenborn",
+    "degree": "Licenciatura en Ciencia de Datos en Organizaciones (UNLP)",
+    "plan": "Plan 2024 (Versión 6)"
+  },
+  "academic_history": {
+    "I101": {
+      "status": "Aprobada",
+      "origen": "Examen",
+      "raw_nota": "7 (Aprobado)",
+      "numeric_grade": 7.0
+    },
+    "X102": {
+      "status": "Aprobada",
+      "origen": "Examen",
+      "raw_nota": "7 (Aprobado)",
+      "numeric_grade": 7.0
+    },
+    "E103": {
+      "status": "Aprobada",
+      "origen": "Examen",
+      "raw_nota": "9 (Aprobado)",
+      "numeric_grade": 9.0
+    },
+    "I104": {
+      "status": "Aprobada",
+      "origen": "Promoción",
+      "raw_nota": "7 (Promocionado)",
+      "numeric_grade": 7.0
+    },
+    "X105": {
+      "status": "Aprobada",
+      "origen": "Equivalencia",
+      "raw_nota": "",
+      "numeric_grade": null
+    },
+    "E106": {
+      "status": "Aprobada",
+      "origen": "Promoción",
+      "raw_nota": "9 (Promocionado)",
+      "numeric_grade": 9.0
+    },
+    "I201": {
+      "status": "Aprobada",
+      "origen": "Promoción",
+      "raw_nota": "10 (Promocionado)",
+      "numeric_grade": 10.0
+    },
+    "E203": {
+      "status": "Aprobada",
+      "origen": "Promoción",
+      "raw_nota": "9 (Promocionado)",
+      "numeric_grade": 9.0
+    },
+    "X204": {
+      "status": "Regular",
+      "origen": "Regularidad",
+      "raw_nota": "A (Aprobado)",
+      "numeric_grade": null
+    },
+    "E206": {
+      "status": "Aprobada",
+      "origen": "Promoción",
+      "raw_nota": "8 (Promocionado)",
+      "numeric_grade": 8.0
+    },
+    "X207": {
+      "status": "En Curso",
+      "origen": "En Curso",
+      "raw_nota": "",
+      "numeric_grade": null
+    },
+    "O208": {
+      "status": "Aprobada",
+      "origen": "Examen",
+      "raw_nota": "A (Aprobado)",
+      "numeric_grade": null
+    },
+    "I301": {
+      "status": "Aprobada",
+      "origen": "Promoción",
+      "raw_nota": "9 (Promocionado)",
+      "numeric_grade": 9.0
+    },
+    "I302": {
+      "status": "Aprobada",
+      "origen": "Promoción",
+      "raw_nota": "7 (Promocionado)",
+      "numeric_grade": 7.0
+    },
+    "E303": {
+      "status": "Aprobada",
+      "origen": "Actuación Provisoria",
+      "raw_nota": "7 (Aprobado)",
+      "numeric_grade": 7.0
+    },
+    "E304": {
+      "status": "Aprobada",
+      "origen": "Actuación Provisoria",
+      "raw_nota": "9 (Aprobado)",
+      "numeric_grade": 9.0
+    },
+    "E307": {
+      "status": "En Curso",
+      "origen": "En Curso",
+      "raw_nota": "",
+      "numeric_grade": null
+    }
+  }
+}

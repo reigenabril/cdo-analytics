@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Datos personales / Planillas del SIU Guaraní
+*.xls
+*.xlsx
+*.csv
+!sample_data/*.csv
+
+# Streamlit & Cache
+.streamlit/
+.cache/
+
+# Sistema Operativo (Mac & Windows)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
