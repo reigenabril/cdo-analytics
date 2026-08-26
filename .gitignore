@@ -15,6 +15,14 @@ ENV/
 *.csv
 !sample_data/*.csv
 
+# CV y Documentos personales
+*cv*
+*CV*
+*Certificado*
+*certificado*
+*.pdf
+*.md.bak
+
 # Streamlit & Cache
 .streamlit/
 .cache/
