@@ -5,7 +5,7 @@ Dashboard academico, malla curricular interactiva y planificador de graduacion p
 ## Caracteristicas
 
 - **Dashboard de Rendimiento:** Metricas de promedio general, porcentaje de avance de la carrera y horas completadas.
-- **Malla Curricular:** Mapa de materias por anio y semestre con deteccion de correlatividades y estados.
+- **Malla Curricular:** Mapa de materias por año y semestre con deteccion de correlatividades y estados.
 - **Simulador What-If:** Proyeccion de promedio final y calculo de calificaciones requeridas para alcanzar metas de GPA.
 - **Planificador de Cursada:** Cronograma de materias por cuatrimestre optimizado por correlativas.
 - **Matriz de Competencias:** Resumen de habilidades tecnicas y de negocio segun asignaturas cursadas.
