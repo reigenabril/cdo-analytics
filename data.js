@@ -66,7 +66,7 @@ window.CDO_DATA = {
         "Toma de Decisiones",
         "Modelos de Gestión"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "I104",
@@ -119,7 +119,7 @@ window.CDO_DATA = {
         "Indicadores Económicos",
         "Cuentas Nacionales"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "I201",
@@ -153,7 +153,7 @@ window.CDO_DATA = {
         "Diseño Relacional",
         "Normalización"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "E203",
@@ -170,7 +170,7 @@ window.CDO_DATA = {
         "Ratios Financieros",
         "Auditoría Contable"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "X204",
@@ -222,7 +222,7 @@ window.CDO_DATA = {
         "Flujos de Trabajo",
         "ERP / CRM"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "X207",
@@ -253,7 +253,7 @@ window.CDO_DATA = {
         "Papers Científicos",
         "Documentación en Inglés"
       ],
-      "hours": 32
+      "hours": 0
     },
     {
       "code": "I301",
@@ -308,7 +308,7 @@ window.CDO_DATA = {
         "Presupuestación",
         "Control de Gestión"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "E304",
@@ -327,7 +327,7 @@ window.CDO_DATA = {
         "Dinámica de Equipos Ágiles",
         "Comunicación"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "I305",
@@ -382,7 +382,7 @@ window.CDO_DATA = {
         "Business Intelligence",
         "Automatización de Negocios"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "I401",
@@ -419,7 +419,7 @@ window.CDO_DATA = {
         "Estructura de Capital",
         "Mercados Financieros"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "E403",
@@ -438,7 +438,7 @@ window.CDO_DATA = {
         "Roadmapping",
         "Gestión de Portafolios"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "E404",
@@ -458,7 +458,7 @@ window.CDO_DATA = {
         "Segmentación de Clientes",
         "Growth & Growth Hacking"
       ],
-      "hours": 64
+      "hours": 96
     },
     {
       "code": "I405",
@@ -495,7 +495,20 @@ window.CDO_DATA = {
         "Modelos de Negocio",
         "Toma de Decisiones de Alta Dirección"
       ],
-      "hours": 64
+      "hours": 96
+    },
+    {
+      "code": "O407",
+      "name": "Optativa (a elección)",
+      "year": 4,
+      "semester": 2,
+      "area": "General / Profesional",
+      "correlativas": [],
+      "skills": [
+        "Formación Optativa",
+        "Especialización Temática"
+      ],
+      "hours": 96
     },
     {
       "code": "O408",
@@ -512,7 +525,7 @@ window.CDO_DATA = {
         "Data Science Aplicado",
         "Informe Profesional"
       ],
-      "hours": 200
+      "hours": 100
     }
   ],
   "student": {

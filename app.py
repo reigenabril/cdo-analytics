@@ -357,7 +357,7 @@ elif nav_option == "Simulador What-If":
         with sc2:
             st.metric("Promedio Proyectado", f"{sim_res['projected_gpa']:.2f}", delta=f"{sim_res['diff']:+.2f}")
         with sc3:
-            st.metric("Materias Evaluadas", f"{sim_res['total_evaluated']} / 28")
+            st.metric("Materias Evaluadas", f"{sim_res['total_evaluated']} / {len(df_subjects)}")
 
 # 4. PLANIFICADOR
 elif nav_option == "Planificador de Graduacion":

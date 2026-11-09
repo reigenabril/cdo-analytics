@@ -35,8 +35,12 @@
     ['importar', 'Importar Archivos']
   ];
 
+  var PLAN_KEY = 'cdo-custom-plan-v1';
+
   var state = {
     page: 'dashboard',
+    pace: 3,
+    customPlan: loadCustomPlan(),
     history: clone(RAW.history || {}),
     student: clone(RAW.student || {}),
     filters: { area: 'Todas', status: 'Todos', q: '' },
@@ -234,6 +238,21 @@
 
   /* ---------- planificador ---------- */
 
+  function loadCustomPlan() {
+    try {
+      var raw = localStorage.getItem(PLAN_KEY);
+      var plan = raw ? JSON.parse(raw) : null;
+      return (plan && plan.terms && plan.terms.length) ? plan : null;
+    } catch (err) { return null; }
+  }
+
+  function saveCustomPlan(plan) {
+    try {
+      if (plan) localStorage.setItem(PLAN_KEY, JSON.stringify(plan));
+      else localStorage.removeItem(PLAN_KEY);
+    } catch (err) { /* modo privado: el plan dura la sesion */ }
+  }
+
   function currentTermStart() {
     var now = new Date();
     var m = now.getMonth() + 1;
@@ -243,83 +262,194 @@
     return { year: y - 1, term: 2 };
   }
 
-  function canTake(code, approvedSet) {
-    var reqs = (BY_CODE[code] && BY_CODE[code].correlativas) || [];
-    if (reqs.indexOf('REQ_13_MATERIAS') !== -1) return approvedSet.size >= 13;
-    for (var i = 0; i < reqs.length; i++) {
-      if (!approvedSet.has(reqs[i])) return false;
-    }
-    return true;
+  function termLabel(year, term) { return year + ' - ' + term + '° Cuatrimestre'; }
+
+  function nextTerm(year, term) {
+    return term === 1 ? { year: year, term: 2 } : { year: year + 1, term: 1 };
   }
 
-  function graduationRoadmap(subjects, maxPerTerm) {
+  function baseSets(subjects) {
     var approved = new Set();
-    var inProgress = [];
+    var current = [];
     subjects.forEach(function (s) {
       if (s.status === 'Aprobada') approved.add(s.code);
-      else if (s.status === 'En Curso' || s.status === 'Regular') inProgress.push(s.code);
+      else if (s.status === 'En Curso' || s.status === 'Regular') current.push(s.code);
     });
+    return { approved: approved, current: current };
+  }
 
-    var pending = subjects.filter(function (s) { return s.status !== 'Aprobada'; })
-      .map(function (s) { return s.code; });
-
-    var roadmap = [];
-    var start = currentTermStart();
-    var year = start.year;
-    var term = start.term;
-    var simApproved = new Set(approved);
-
-    function advance() {
-      if (term === 1) { term = 2; } else { term = 1; year += 1; }
+  function missingReqs(code, approvedSet) {
+    var item = BY_CODE[code];
+    if (!item) return [];
+    var reqs = item.correlativas || [];
+    if (reqs.indexOf('REQ_13_MATERIAS') !== -1) {
+      return approvedSet.size >= 13 ? [] : ['13 materias aprobadas'];
     }
+    return reqs.filter(function (r) { return !approvedSet.has(r); });
+  }
 
-    if (inProgress.length) {
-      roadmap.push({
-        term_name: year + ' - ' + term + '° Cuatrimestre (Actual)',
-        year: year, term: term,
-        subjects: inProgress.map(function (c) { return BY_CODE[c]; }).filter(Boolean),
-        is_current: true
-      });
-      inProgress.forEach(function (c) {
-        simApproved.add(c);
-        var i = pending.indexOf(c);
-        if (i !== -1) pending.splice(i, 1);
-      });
-      advance();
+  function sortByPlan(a, b) {
+    return (BY_CODE[a].year - BY_CODE[b].year) || (BY_CODE[a].semester - BY_CODE[b].semester);
+  }
+
+  function autoTerms(subjects, maxPerTerm) {
+    var base = baseSets(subjects);
+    var start = currentTermStart();
+    var cursor = { year: start.year, term: start.term };
+    var terms = [];
+    var approved = new Set(base.approved);
+    var pending = subjects.filter(function (s) { return s.status !== 'Aprobada'; })
+      .map(function (s) { return s.code; })
+      .filter(function (c) { return base.current.indexOf(c) === -1; });
+
+    if (base.current.length) {
+      terms.push({ year: cursor.year, term: cursor.term, isCurrent: true, codes: base.current.slice() });
+      base.current.forEach(function (c) { approved.add(c); });
+      cursor = nextTerm(cursor.year, cursor.term);
     }
 
     var guard = 0;
-    while (pending.length && guard < 15) {
+    while (pending.length && guard < 20) {
       guard += 1;
-      var available = pending.filter(function (c) { return canTake(c, simApproved); });
+      var available = pending.filter(function (c) { return missingReqs(c, approved).length === 0; }).sort(sortByPlan);
       if (!available.length) break;
 
-      available.sort(function (a, b) {
-        return (BY_CODE[a].year - BY_CODE[b].year) || (BY_CODE[a].semester - BY_CODE[b].semester);
-      });
       var chosen = available.slice(0, maxPerTerm);
-
-      roadmap.push({
-        term_name: year + ' - ' + term + '° Cuatrimestre',
-        year: year, term: term,
-        subjects: chosen.map(function (c) { return BY_CODE[c]; }),
-        is_current: false
-      });
-
+      terms.push({ year: cursor.year, term: cursor.term, isCurrent: false, codes: chosen });
       chosen.forEach(function (c) {
-        simApproved.add(c);
-        var i = pending.indexOf(c);
-        if (i !== -1) pending.splice(i, 1);
+        approved.add(c);
+        pending.splice(pending.indexOf(c), 1);
       });
-      advance();
+      cursor = nextTerm(cursor.year, cursor.term);
     }
+    return terms;
+  }
+
+  function cloneTerms(terms) {
+    return terms.map(function (t) {
+      return { year: t.year, term: t.term, isCurrent: !!t.isCurrent, codes: t.codes.slice() };
+    });
+  }
+
+  function currentTerms(subjects, terms) {
+    if (terms) return terms;
+    if (state.customPlan) return state.customPlan.terms;
+    return autoTerms(subjects, state.pace);
+  }
+
+  function approvedBefore(terms, index, subjects) {
+    var set = new Set(baseSets(subjects).approved);
+    for (var i = 0; i < index; i++) {
+      terms[i].codes.forEach(function (c) { set.add(c); });
+    }
+    return set;
+  }
+
+  function planCandidates(terms, index, subjects) {
+    var approved = approvedBefore(terms, index, subjects);
+    var placedUpTo = new Set();
+    terms.slice(0, index + 1).forEach(function (t) { t.codes.forEach(function (c) { placedUpTo.add(c); }); });
+
+    return subjects.filter(function (s) {
+      return s.status !== 'Aprobada' && !placedUpTo.has(s.code) && missingReqs(s.code, approved).length === 0;
+    }).map(function (s) { return s.code; }).sort(sortByPlan);
+  }
+
+  function planTotals(terms, subjects) {
+    var currentIndex = -1;
+    terms.forEach(function (t, i) { if (t.isCurrent) currentIndex = i; });
+
+    var nonEmpty = terms.filter(function (t) { return t.codes.length; });
+    var last = nonEmpty[nonEmpty.length - 1];
+    var after = terms.filter(function (t, i) { return i > currentIndex && t.codes.length; });
+
+    var placed = new Set();
+    terms.forEach(function (t) { t.codes.forEach(function (c) { placed.add(c); }); });
+    var leftover = subjects.filter(function (s) {
+      return s.status !== 'Aprobada' && !placed.has(s.code);
+    }).length;
 
     return {
-      roadmap: roadmap,
-      estimated_graduation: roadmap.length ? roadmap[roadmap.length - 1].term_name : 'Graduado',
-      remaining_terms: roadmap.filter(function (r) { return !r.is_current; }).length,
-      leftover: pending.length
+      estimated: last ? termLabel(last.year, last.term) + (last.isCurrent ? ' (actual)' : '') : 'Graduado',
+      remaining: after.length,
+      leftover: leftover
     };
+  }
+
+  function setCustomPlan(terms) {
+    state.customPlan = { terms: cloneTerms(terms) };
+    saveCustomPlan(state.customPlan);
+    render();
+  }
+
+  function planHTML(terms, subjects) {
+    return terms.map(function (t, index) {
+      var approved = approvedBefore(terms, index, subjects);
+      var candidates = planCandidates(terms, index, subjects);
+      var invalid = t.isCurrent ? [] : t.codes.filter(function (c) { return missingReqs(c, approved).length > 0; });
+
+      var options = candidates.map(function (c) {
+        return '<option value="' + esc(c) + '">' + esc(c) + ' · ' + esc(BY_CODE[c].name) + '</option>';
+      }).join('');
+
+      var cards = t.codes.map(function (code) {
+        var s = BY_CODE[code];
+        if (!s) return '';
+        var color = AREAS[s.area] ? AREAS[s.area].color : '#2563EB';
+        var bad = t.isCurrent ? [] : missingReqs(code, approved);
+        return '<div class="subject-card' + (bad.length ? ' is-invalid' : '') + '" style="--area-color:' + color + '">' +
+          '<button class="rm" type="button" data-term="' + index + '" data-code="' + esc(code) + '" aria-label="Quitar ' + esc(s.name) + '">&times;</button>' +
+          '<div class="sc-code">' + esc(s.code) + '</div>' +
+          '<div class="sc-name">' + esc(s.name) + '</div>' +
+          '<div class="sc-area">' + esc(s.area) + '</div>' +
+          (bad.length ? '<div class="sc-warn">Falta: ' + esc(bad.join(', ')) + '</div>' : '') +
+          '</div>';
+      }).join('');
+
+      var warn = (t.codes.length && invalid.length)
+        ? '<div class="term-warn">' + invalid.length + ' materia(s) con correlatividades sin cumplir.</div>'
+        : '';
+
+      return '<div class="term' + (t.isCurrent ? ' is-current' : '') + '">' +
+        '<div class="term-head">' +
+        '<span>' + esc(termLabel(t.year, t.term)) + '</span>' +
+        (t.isCurrent ? '<span class="term-badge">En curso</span>' : '') +
+        '<span class="term-count">' + t.codes.length + ' materias</span>' +
+        '<select class="add-select" data-term="' + index + '" aria-label="Agregar materia">' +
+        '<option value="">+ materia</option>' + options + '</select>' +
+        '</div>' +
+        '<div class="term-body">' + (cards || '<p class="skill-empty">Sin materias asignadas.</p>') + '</div>' +
+        warn +
+        '</div>';
+    }).join('');
+  }
+
+  function bindPlan(container, subjects, terms) {
+    if (!container) return;
+
+    container.querySelectorAll('.rm').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var next = cloneTerms(terms);
+        var idx = parseInt(btn.getAttribute('data-term'), 10);
+        var code = btn.getAttribute('data-code');
+        next[idx].codes = next[idx].codes.filter(function (c) { return c !== code; });
+        setCustomPlan(next);
+      });
+    });
+
+    container.querySelectorAll('.add-select').forEach(function (sel) {
+      sel.addEventListener('change', function () {
+        if (!sel.value) return;
+        var next = cloneTerms(terms);
+        var idx = parseInt(sel.getAttribute('data-term'), 10);
+        var code = sel.value;
+        next.forEach(function (t) { t.codes = t.codes.filter(function (c) { return c !== code; }); });
+        next[idx].codes.push(code);
+        setCustomPlan(next);
+      });
+    });
   }
 
   /* ---------- graficos ---------- */
@@ -525,7 +655,7 @@
   }
 
   function viewMalla(subjects) {
-    var h = pageHead('Malla curricular', 'Plan de 4 anios, correlatividades y estado de cada materia.', '28 materias');
+    var h = pageHead('Malla curricular', 'Plan de 4 anios, correlatividades y estado de cada materia.', CURRICULUM.length + ' materias');
     var f = state.filters;
 
     var optionsArea = ['Todas'].concat(Object.keys(AREAS)).map(function (a) {
@@ -654,35 +784,26 @@
   }
 
   function viewPlanner(subjects) {
-    var h = pageHead('Planificador de cursada', 'Secuencia sugerida de cuatrimestres segun correlatividades.', 'Roadmap');
+    var h = pageHead('Planificador de cursada', 'Secuencia por correlatividades. Podes mover materias de cuatrimestre con el + y la x.', 'Editable');
 
-    var plan = graduationRoadmap(subjects, 3);
-    var chips = plan.roadmap.map(function (t) {
-      var cards = t.subjects.map(function (s) {
-        var color = AREAS[s.area] ? AREAS[s.area].color : '#2563EB';
-        return '<div class="subject-card" style="--area-color:' + color + '">' +
-          '<div class="sc-code">' + esc(s.code) + '</div>' +
-          '<div class="sc-name">' + esc(s.name) + '</div>' +
-          '<div class="sc-area">' + esc(s.area) + '</div></div>';
-      }).join('');
-      return '<div class="term' + (t.is_current ? ' is-current' : '') + '">' +
-        '<div class="term-head">' + esc(t.term_name) +
-        (t.is_current ? '<span class="term-badge">En curso</span>' : '') +
-        '<span style="margin-left:auto;font-weight:500;font-size:11px;color:#64748B">' + t.subjects.length + ' materias</span>' +
-        '</div><div class="term-body">' + cards + '</div></div>';
-    }).join('');
+    var terms = currentTerms(subjects);
+    var totals = planTotals(terms, subjects);
+    var custom = !!state.customPlan;
 
-    var leftover = plan.leftover
-      ? '<div class="note warn">Quedan ' + plan.leftover + ' materias sin ubicar: revisa correlatividades o sube el ritmo.</div>'
-      : '';
+    var slider = '<div class="slider-row"><input type="range" id="pace-range" min="1" max="6" step="1" value="' + state.pace + '"' +
+      (custom ? ' disabled title="El plan personalizado no usa el ritmo automatico"' : '') +
+      ' aria-label="Materias por cuatrimestre"><output class="slider-value">' + state.pace + '</output></div>';
 
     return h +
-      '<div class="card"><h3>Ritmo de cursada<small>materias por cuatrimestre</small></h3>' +
-      '<div class="slider-row"><input type="range" id="pace-range" min="1" max="4" step="1" value="3" aria-label="Materias por cuatrimestre">' +
-      '<output class="slider-value" id="pace-out">3</output></div>' +
-      '<p class="skill-empty" style="margin-top:8px">Graduacion estimada: <strong id="grad-est">' + esc(plan.estimated_graduation) + '</strong> · ' +
-      '<span id="grad-terms">' + plan.remaining_terms + '</span> cuatrimestres desde el actual.</p></div>' +
-      '<div id="roadmap">' + chips + '</div>' + leftover;
+      '<div class="card"><h3>Ritmo de cursada<small>' +
+      (custom ? 'plan personalizado guardado en este navegador' : 'materias por cuatrimestre del plan sugerido') +
+      '</small></h3>' + slider +
+      '<p class="plan-summary" style="margin-top:10px">Graduacion estimada: <strong id="plan-est">' + esc(totals.estimated) + '</strong> · ' +
+      '<span id="plan-terms">' + totals.remaining + '</span> cuatrimestres despues del actual.' +
+      (custom ? ' <button class="link-btn" id="plan-reset" type="button">Volver al plan sugerido</button>' : '') +
+      '</p></div>' +
+      '<div id="roadmap">' + planHTML(terms, subjects) + '</div>' +
+      (totals.leftover ? '<div class="note warn" id="plan-leftover">Quedan ' + totals.leftover + ' materias sin ubicar.</div>' : '');
   }
 
   function viewCompetencias(subjects) {
@@ -850,35 +971,32 @@
     }
 
     if (state.page === 'planificador') {
+      var terms = currentTerms(subjects);
+      var roadmap = document.getElementById('roadmap');
+      bindPlan(roadmap, subjects, terms);
+
       var pace = document.getElementById('pace-range');
-      var update = function () {
-        var n = parseInt(pace.value, 10);
-        document.getElementById('pace-out').textContent = n;
-        var plan = graduationRoadmap(subjects, n);
-        document.getElementById('grad-est').textContent = plan.estimated_graduation;
-        document.getElementById('grad-terms').textContent = plan.remaining_terms;
+      if (pace) {
+        pace.addEventListener('input', function () {
+          state.pace = parseInt(pace.value, 10);
+          var next = autoTerms(subjects, state.pace);
+          var totals = planTotals(next, subjects);
+          document.querySelector('.slider-value').textContent = state.pace;
+          document.getElementById('plan-est').textContent = totals.estimated;
+          document.getElementById('plan-terms').textContent = totals.remaining;
+          roadmap.innerHTML = planHTML(next, subjects);
+          bindPlan(roadmap, subjects, next);
+        });
+      }
 
-        var html = plan.roadmap.map(function (t) {
-          var cards = t.subjects.map(function (s) {
-            var color = AREAS[s.area] ? AREAS[s.area].color : '#2563EB';
-            return '<div class="subject-card" style="--area-color:' + color + '">' +
-              '<div class="sc-code">' + esc(s.code) + '</div>' +
-              '<div class="sc-name">' + esc(s.name) + '</div>' +
-              '<div class="sc-area">' + esc(s.area) + '</div></div>';
-          }).join('');
-          return '<div class="term' + (t.is_current ? ' is-current' : '') + '">' +
-            '<div class="term-head">' + esc(t.term_name) +
-            (t.is_current ? '<span class="term-badge">En curso</span>' : '') +
-            '<span style="margin-left:auto;font-weight:500;font-size:11px;color:#64748B">' + t.subjects.length + ' materias</span>' +
-            '</div><div class="term-body">' + cards + '</div></div>';
-        }).join('');
-
-        if (plan.leftover) {
-          html += '<div class="note warn">Quedan ' + plan.leftover + ' materias sin ubicar.</div>';
-        }
-        document.getElementById('roadmap').innerHTML = html;
-      };
-      pace.addEventListener('input', update);
+      var reset = document.getElementById('plan-reset');
+      if (reset) {
+        reset.addEventListener('click', function () {
+          state.customPlan = null;
+          saveCustomPlan(null);
+          render();
+        });
+      }
     }
 
     if (state.page === 'importar') {

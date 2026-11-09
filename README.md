@@ -8,9 +8,9 @@ Licenciatura en Ciencia de Datos en Organizaciones (UNLP).
 ## Caracteristicas
 
 - **Dashboard de Rendimiento:** promedio general, avance de la carrera, horas completadas y balance por area.
-- **Malla Curricular:** 28 materias por anio y semestre, con correlatividades y estado de cada una.
+- **Malla Curricular:** 29 materias (plan oficial 2024, 2692 h) por anio y semestre, con correlatividades y estado de cada una.
 - **Simulador What-If:** promedio necesario para una meta de graduacion y proyeccion con notas tentativas.
-- **Planificador de Cursada:** cronograma por cuatrimestre respetando correlatividades.
+- **Planificador de Cursada:** cronograma por cuatrimestre respetando correlatividades, editable a mano.
 - **Matriz de Competencias:** habilidades tecnicas, de negocio y cuantitativas segun materias aprobadas.
 - **Importador de Datos:** carga de reportes del SIU Guarani (.xls/.xlsx) o `academic_data.json`, procesados en el navegador.
 

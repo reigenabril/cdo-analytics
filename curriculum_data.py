@@ -57,7 +57,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": [],
         "skills": ["Estructura Organizacional", "Procesos Administrativos", "Toma de Decisiones", "Modelos de Gestión"],
-        "hours": 64
+        "hours": 96
     },
 
     # --- AÑO 1 - SEMESTRE 2 ---
@@ -89,7 +89,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["X102", "E103"],
         "skills": ["Microeconomía", "Macroeconomía", "Indicadores Económicos", "Cuentas Nacionales"],
-        "hours": 64
+        "hours": 96
     },
 
     # --- AÑO 2 - SEMESTRE 1 ---
@@ -111,7 +111,7 @@ CURRICULUM = [
         "area": "Computación",
         "correlativas": ["I104"],
         "skills": ["Modelo Entidad-Relación", "SQL Básico", "Diseño Relacional", "Normalización"],
-        "hours": 64
+        "hours": 96
     },
     {
         "code": "E203",
@@ -121,7 +121,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["E106"],
         "skills": ["Balances", "Estados de Resultados", "Ratios Financieros", "Auditoría Contable"],
-        "hours": 64
+        "hours": 96
     },
     {
         "code": "X204",
@@ -153,7 +153,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["E203"],
         "skills": ["BPMN", "Optimización de Procesos", "Flujos de Trabajo", "ERP / CRM"],
-        "hours": 64
+        "hours": 96
     },
     {
         "code": "X207",
@@ -173,7 +173,7 @@ CURRICULUM = [
         "area": "General / Profesional",
         "correlativas": [],
         "skills": ["Comprensión Lectora Técnica", "Papers Científicos", "Documentación en Inglés"],
-        "hours": 32
+        "hours": 0
     },
 
     # --- AÑO 3 - SEMESTRE 1 ---
@@ -205,7 +205,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["X105", "E203", "O208"],
         "skills": ["Costeo por Procesos", "Punto de Equilibrio", "Presupuestación", "Control de Gestión"],
-        "hours": 64
+        "hours": 96
     },
     {
         "code": "E304",
@@ -215,7 +215,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["X105", "E203", "O208"],
         "skills": ["Liderazgo", "Gestión del Talento", "Dinámica de Equipos Ágiles", "Comunicación"],
-        "hours": 64
+        "hours": 96
     },
 
     # --- AÑO 3 - SEMESTRE 2 ---
@@ -247,7 +247,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["X204", "E206", "O208"],
         "skills": ["Sistemas de Información Empresarial", "Business Intelligence", "Automatización de Negocios"],
-        "hours": 64
+        "hours": 96
     },
 
     # --- AÑO 4 - SEMESTRE 1 ---
@@ -269,7 +269,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["X207", "E303"],
         "skills": ["Valuación de Proyectos (VAN/TIR)", "Riesgo y Retorno", "Estructura de Capital", "Mercados Financieros"],
-        "hours": 64
+        "hours": 96
     },
     {
         "code": "E403",
@@ -279,7 +279,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["X207", "E307", "O208"],
         "skills": ["Gestión de Proyectos Tech", "Transformación Digital", "Roadmapping", "Gestión de Portafolios"],
-        "hours": 64
+        "hours": 96
     },
     {
         "code": "E404",
@@ -289,7 +289,7 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["E206", "X207", "O208", "E304"],
         "skills": ["Marketing Analytics", "Customer Lifetime Value", "Segmentación de Clientes", "Growth & Growth Hacking"],
-        "hours": 64
+        "hours": 96
     },
 
     # --- AÑO 4 - SEMESTRE 2 ---
@@ -311,7 +311,17 @@ CURRICULUM = [
         "area": "Gestión & Negocios",
         "correlativas": ["X207", "E303", "E304", "E307"],
         "skills": ["Estrategia Corporativa", "Gobierno Corporativo", "Modelos de Negocio", "Toma de Decisiones de Alta Dirección"],
-        "hours": 64
+        "hours": 96
+    },
+    {
+        "code": "O407",
+        "name": "Optativa (a elección)",
+        "year": 4,
+        "semester": 2,
+        "area": "General / Profesional",
+        "correlativas": [],
+        "skills": ["Formación Optativa", "Especialización Temática"],
+        "hours": 96
     },
     {
         "code": "O408",
@@ -321,7 +331,7 @@ CURRICULUM = [
         "area": "General / Profesional",
         "correlativas": ["REQ_13_MATERIAS"],
         "skills": ["Experiencia Práctica", "Resolución de Problemas Reales", "Data Science Aplicado", "Informe Profesional"],
-        "hours": 200
+        "hours": 100
     }
 ]
 
