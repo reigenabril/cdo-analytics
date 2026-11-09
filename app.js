@@ -242,7 +242,9 @@
     try {
       var raw = localStorage.getItem(PLAN_KEY);
       var plan = raw ? JSON.parse(raw) : null;
-      return (plan && plan.terms && plan.terms.length) ? plan : null;
+      if (!plan || !plan.terms || !plan.terms.length) return null;
+      plan.terms = normalizeTerms(plan.terms);
+      return plan;
     } catch (err) { return null; }
   }
 
@@ -323,6 +325,12 @@
       cursor = nextTerm(cursor.year, cursor.term);
     }
     return terms;
+  }
+
+  function normalizeTerms(terms) {
+    var keep = terms.slice();
+    while (keep.length > 1 && !keep[keep.length - 1].codes.length) keep.pop();
+    return keep;
   }
 
   function cloneTerms(terms) {
@@ -803,6 +811,7 @@
       (custom ? ' <button class="link-btn" id="plan-reset" type="button">Volver al plan sugerido</button>' : '') +
       '</p></div>' +
       '<div id="roadmap">' + planHTML(terms, subjects) + '</div>' +
+      '<button class="btn ghost" id="plan-add-term" type="button" style="margin-top:4px">+ Agregar cuatrimestre</button>' +
       (totals.leftover ? '<div class="note warn" id="plan-leftover">Quedan ' + totals.leftover + ' materias sin ubicar.</div>' : '');
   }
 
@@ -986,6 +995,17 @@
           document.getElementById('plan-terms').textContent = totals.remaining;
           roadmap.innerHTML = planHTML(next, subjects);
           bindPlan(roadmap, subjects, next);
+        });
+      }
+
+      var addTerm = document.getElementById('plan-add-term');
+      if (addTerm) {
+        addTerm.addEventListener('click', function () {
+          var current = currentTerms(subjects);
+          var last = current[current.length - 1];
+          var next = nextTerm(last.year, last.term);
+          current = current.concat([{ year: next.year, term: next.term, isCurrent: false, codes: [] }]);
+          setCustomPlan(current);
         });
       }
 
