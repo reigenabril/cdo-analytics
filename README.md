@@ -1,34 +1,74 @@
 # CDO Analytics & Career Hub
 
-Dashboard academico, malla curricular interactiva y planificador de graduacion para la Licenciatura en Ciencia de Datos en Organizaciones (UNLP).
+Dashboard academico, malla curricular interactiva y planificador de graduacion para la
+Licenciatura en Ciencia de Datos en Organizaciones (UNLP).
+
+**Version web:** https://reigenabril.github.io/cdo-analytics/ — sitio estatico, sin servidor.
 
 ## Caracteristicas
 
-- **Dashboard de Rendimiento:** Metricas de promedio general, porcentaje de avance de la carrera y horas completadas.
-- **Malla Curricular:** Mapa de materias por año y semestre con deteccion de correlatividades y estados.
-- **Simulador What-If:** Proyeccion de promedio final y calculo de calificaciones requeridas para alcanzar metas de GPA.
-- **Planificador de Cursada:** Cronograma de materias por cuatrimestre optimizado por correlativas.
-- **Matriz de Competencias:** Resumen de habilidades tecnicas y de negocio segun asignaturas cursadas.
-- **Importador de Datos:** Carga dinamica de reportes exportados de SIU Guarani.
+- **Dashboard de Rendimiento:** promedio general, avance de la carrera, horas completadas y balance por area.
+- **Malla Curricular:** 28 materias por anio y semestre, con correlatividades y estado de cada una.
+- **Simulador What-If:** promedio necesario para una meta de graduacion y proyeccion con notas tentativas.
+- **Planificador de Cursada:** cronograma por cuatrimestre respetando correlatividades.
+- **Matriz de Competencias:** habilidades tecnicas, de negocio y cuantitativas segun materias aprobadas.
+- **Importador de Datos:** carga de reportes del SIU Guarani (.xls/.xlsx) o `academic_data.json`, procesados en el navegador.
 
-## Instalacion y Uso
+## Version web (GitHub Pages)
 
-1. Instalar dependencias:
-   ```bash
-   pip install -r requirements.txt
-   ```
+El sitio vive en `docs/`: HTML, CSS y JavaScript sin backend. La logica de `analytics.py` y
+`simulator.py` esta portada a `docs/app.js`, y los datos se generan desde las fuentes Python.
 
-2. Ejecutar la aplicacion:
-   ```bash
-   streamlit run app.py
-   ```
+```
+docs/
+├── index.html
+├── styles.css
+├── app.js
+├── data.js            # generado, no editar a mano
+└── .nojekyll
+```
 
-3. Abrir en el navegador: `http://localhost:8501`.
+Regenerar los datos cuando cambie el plan de estudios o el historial academico:
+
+```bash
+python3 tools/build_static_data.py
+```
+
+Probar localmente:
+
+```bash
+python3 -m http.server 8000
+# abrir http://localhost:8000/docs/
+```
+
+### Publicar en GitHub Pages
+
+1. Push a `main`.
+2. Settings → Pages → **Source: Deploy from a branch** → Branch `main`, carpeta `/docs` → Save.
+3. En un minuto queda online en `https://<usuario>.github.io/cdo-analytics/`.
+
+Los graficos usan Plotly desde CDN y la importacion de Excel usa SheetJS desde CDN, asi que
+la primera carga necesita conexion. Si el CDN no esta disponible la app sigue funcionando,
+solo se muestran los graficos vacios.
+
+## Version Streamlit (local)
+
+Se mantiene la app original en Python, util para trabajar con los Excel del SIU sin navegador.
+
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+Abrir `http://localhost:8501`.
 
 ## Estructura
 
-- `app.py`: Aplicacion principal en Streamlit.
-- `data_loader.py`: Procesamiento y carga de datos academicos.
-- `curriculum_data.py`: Plan de estudios oficial y correlatividades.
-- `analytics.py`: Calculo de metricas y graficos.
-- `simulator.py`: Motor de proyecciones y roadmap de graduacion.
+- `app.py`: aplicacion Streamlit.
+- `data_loader.py`: lectura de plan de estudios y actuaciones provisorias.
+- `curriculum_data.py`: plan oficial y correlatividades (fuente de verdad).
+- `analytics.py`: metricas y graficos.
+- `simulator.py`: proyecciones y roadmap de graduacion.
+- `academic_data.json`: historial academico sanitizado que usa el sitio.
+- `tools/build_static_data.py`: genera `docs/data.js` para la version web.
+- `docs/`: version estatica publicada en GitHub Pages.

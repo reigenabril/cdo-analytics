@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CDO Analytics &amp; Career Hub · UNLP</title>
+<meta name="description" content="Dashboard academico, malla curricular interactiva y planificador de graduacion de la Licenciatura en Ciencia de Datos en Organizaciones (UNLP).">
+<meta name="color-scheme" content="light">
+<link rel="preconnect" href="https://cdn.plot.ly">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230F172A'/%3E%3Cpath d='M8 21l5-6 4 3 7-9' stroke='%233B82F6' stroke-width='2.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<script defer src="data.js"></script>
+<script defer src="app.js"></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28"><rect width="32" height="32" rx="8" fill="#1E293B"/><path d="M8 21l5-6 4 3 7-9" stroke="#3B82F6" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div>
+        <h1>CDO Analytics</h1>
+        <p>Lic. en Ciencia de Datos en Organizaciones</p>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav" aria-label="Secciones"></nav>
+
+    <div class="student-box" id="student-box"></div>
+
+    <div class="sidebar-foot">
+      <span>UNLP · Plan 2024</span>
+      <button class="link-btn" id="btn-print" type="button">Imprimir / PDF</button>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <div id="view" aria-live="polite"></div>
+    <footer class="foot">
+      <span id="foot-note">Datos locales del estudiante · nada se envia a ningun servidor.</span>
+      <a href="https://github.com/reigenabril/cdo-analytics" target="_blank" rel="noopener">Repositorio</a>
+    </footer>
+  </main>
+</div>
+<noscript><p style="padding:24px">Esta aplicacion necesita JavaScript habilitado.</p></noscript>
+</body>
+</html>
