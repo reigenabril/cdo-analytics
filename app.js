@@ -407,14 +407,14 @@
       }).join('');
 
       var warn = (t.codes.length && invalid.length)
-        ? '<div class="term-warn">' + invalid.length + ' materia(s) con correlatividades sin cumplir.</div>'
+        ? '<div class="term-warn">' + invalid.length + (invalid.length === 1 ? ' materia con correlatividades sin cumplir.' : ' materias con correlatividades sin cumplir.') + '</div>'
         : '';
 
       return '<div class="term' + (t.isCurrent ? ' is-current' : '') + '">' +
         '<div class="term-head">' +
         '<span>' + esc(termLabel(t.year, t.term)) + '</span>' +
         (t.isCurrent ? '<span class="term-badge">En curso</span>' : '') +
-        '<span class="term-count">' + t.codes.length + ' materias</span>' +
+        '<span class="term-count">' + t.codes.length + (t.codes.length === 1 ? ' materia' : ' materias') + '</span>' +
         '<select class="add-select" data-term="' + index + '" aria-label="Agregar materia">' +
         '<option value="">+ materia</option>' + options + '</select>' +
         '</div>' +
