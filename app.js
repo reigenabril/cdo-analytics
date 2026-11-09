@@ -1,6 +1,6 @@
 /* ============================================================
-   CDO Analytics - aplicacion estatica
-   Port de app.py / data_loader.py / analytics.py / simulator.py
+   CDO Analytics - aplicacion estatica (GitHub Pages)
+   Dashboard, malla curricular, simulador y planificador.
    ============================================================ */
 (function () {
   'use strict';

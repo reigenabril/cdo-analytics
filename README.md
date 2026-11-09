@@ -3,71 +3,53 @@
 Dashboard academico, malla curricular interactiva y planificador de graduacion para la
 Licenciatura en Ciencia de Datos en Organizaciones (UNLP).
 
-**Version web:** https://reigenabril.github.io/cdo-analytics/ — sitio estatico, sin servidor.
+**Version web:** https://reigenabril.github.io/cdo-analytics/
+
+Sitio estatico (HTML, CSS y JavaScript): sin backend, sin build, se publica tal cual en
+GitHub Pages.
 
 ## Caracteristicas
 
 - **Dashboard de Rendimiento:** promedio general, avance de la carrera, horas completadas y balance por area.
 - **Malla Curricular:** 29 materias (plan oficial 2024, 2692 h) por anio y semestre, con correlatividades y estado de cada una.
 - **Simulador What-If:** promedio necesario para una meta de graduacion y proyeccion con notas tentativas.
-- **Planificador de Cursada:** cronograma por cuatrimestre respetando correlatividades, editable a mano.
+- **Planificador de Cursada:** cronograma por cuatrimestre con validacion de correlatividades; las materias se mueven a mano y el plan queda guardado en el navegador.
 - **Matriz de Competencias:** habilidades tecnicas, de negocio y cuantitativas segun materias aprobadas.
-- **Importador de Datos:** carga de reportes del SIU Guarani (.xls/.xlsx) o `academic_data.json`, procesados en el navegador.
+- **Importador de Datos:** reportes del SIU Guarani (.xls/.xlsx) o `academic_data.json`, procesados en el navegador.
 
-## Version web (GitHub Pages)
+## Datos
 
-El sitio vive en la raiz del repo: HTML, CSS y JavaScript sin backend. La logica de `analytics.py` y
-`simulator.py` esta portada a `docs/app.js`, y los datos se generan desde las fuentes Python.
+- `curriculum_data.py`: plan oficial y correlatividades. Es la fuente de verdad.
+- `academic_data.json`: historial academico (`student_info` + `academic_history`).
+- `data.js`: datos que consume el sitio. Es generado, no editar a mano.
 
-```
-index.html
-styles.css
-app.js
-data.js               # generado, no editar a mano
-.nojekyll
-```
-
-Regenerar los datos cuando cambie el plan de estudios o el historial academico:
+Despues de cambiar notas o el plan de estudios:
 
 ```bash
 python3 tools/build_static_data.py
 ```
 
-Probar localmente:
+Solo necesita Python 3, sin dependencias.
+
+## Desarrollo local
 
 ```bash
 python3 -m http.server 8000
 # abrir http://localhost:8000/
 ```
 
-### Publicar en GitHub Pages
+## Publicacion
 
-1. Push a `main`.
-2. Settings → Pages → **Source: Deploy from a branch** → Branch `main`, carpeta `/ (root)` → Save.
-3. En un minuto queda online en `https://<usuario>.github.io/cdo-analytics/`.
-
-Los graficos usan Plotly desde CDN y la importacion de Excel usa SheetJS desde CDN, asi que
-la primera carga necesita conexion. Si el CDN no esta disponible la app sigue funcionando,
-solo se muestran los graficos vacios.
-
-## Version Streamlit (local)
-
-Se mantiene la app original en Python, util para trabajar con los Excel del SIU sin navegador.
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-Abrir `http://localhost:8501`.
+GitHub Pages sirve el repositorio desde `main` / `(root)`; `.nojekyll` desactiva Jekyll.
+Cada push a `main` republica el sitio.
 
 ## Estructura
 
-- `app.py`: aplicacion Streamlit.
-- `data_loader.py`: lectura de plan de estudios y actuaciones provisorias.
-- `curriculum_data.py`: plan oficial y correlatividades (fuente de verdad).
-- `analytics.py`: metricas y graficos.
-- `simulator.py`: proyecciones y roadmap de graduacion.
-- `academic_data.json`: historial academico sanitizado que usa el sitio.
-- `tools/build_static_data.py`: genera `data.js` para la version web.
-- `index.html`, `styles.css`, `app.js`: version estatica publicada en GitHub Pages.
+- `index.html`, `styles.css`, `app.js`: la aplicacion.
+- `data.js`: datos para el navegador (generado por `tools/build_static_data.py`).
+- `curriculum_data.py`: plan de estudios oficial y correlatividades.
+- `academic_data.json`: historial academico.
+- `.nojekyll`: evita el procesamiento de Jekyll.
+
+Los graficos usan Plotly y la importacion de Excel usa SheetJS, ambos desde CDN: la primera
+carga necesita conexion. Sin CDN la app sigue funcionando, solo quedan los graficos vacios.

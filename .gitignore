@@ -23,8 +23,7 @@ ENV/
 *.pdf
 *.md.bak
 
-# Streamlit & Cache
-.streamlit/
+# Cache
 .cache/
 
 # Sistema Operativo (Mac & Windows)
