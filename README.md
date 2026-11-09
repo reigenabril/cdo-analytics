@@ -16,16 +16,15 @@ Licenciatura en Ciencia de Datos en Organizaciones (UNLP).
 
 ## Version web (GitHub Pages)
 
-El sitio vive en `docs/`: HTML, CSS y JavaScript sin backend. La logica de `analytics.py` y
+El sitio vive en la raiz del repo: HTML, CSS y JavaScript sin backend. La logica de `analytics.py` y
 `simulator.py` esta portada a `docs/app.js`, y los datos se generan desde las fuentes Python.
 
 ```
-docs/
-├── index.html
-├── styles.css
-├── app.js
-├── data.js            # generado, no editar a mano
-└── .nojekyll
+index.html
+styles.css
+app.js
+data.js               # generado, no editar a mano
+.nojekyll
 ```
 
 Regenerar los datos cuando cambie el plan de estudios o el historial academico:
@@ -38,13 +37,13 @@ Probar localmente:
 
 ```bash
 python3 -m http.server 8000
-# abrir http://localhost:8000/docs/
+# abrir http://localhost:8000/
 ```
 
 ### Publicar en GitHub Pages
 
 1. Push a `main`.
-2. Settings → Pages → **Source: Deploy from a branch** → Branch `main`, carpeta `/docs` → Save.
+2. Settings → Pages → **Source: Deploy from a branch** → Branch `main`, carpeta `/ (root)` → Save.
 3. En un minuto queda online en `https://<usuario>.github.io/cdo-analytics/`.
 
 Los graficos usan Plotly desde CDN y la importacion de Excel usa SheetJS desde CDN, asi que
@@ -70,5 +69,5 @@ Abrir `http://localhost:8501`.
 - `analytics.py`: metricas y graficos.
 - `simulator.py`: proyecciones y roadmap de graduacion.
 - `academic_data.json`: historial academico sanitizado que usa el sitio.
-- `tools/build_static_data.py`: genera `docs/data.js` para la version web.
-- `docs/`: version estatica publicada en GitHub Pages.
+- `tools/build_static_data.py`: genera `data.js` para la version web.
+- `index.html`, `styles.css`, `app.js`: version estatica publicada en GitHub Pages.

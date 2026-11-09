@@ -1,6 +1,6 @@
 """
 build_static_data.py
-Genera docs/data.js (datos estáticos para GitHub Pages) a partir de
+Genera data.js (datos estáticos para GitHub Pages) a partir de
 curriculum_data.py y academic_data.json.
 
 Uso:
@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT))
 from curriculum_data import AREAS, CURRICULUM  # noqa: E402
 
 DATA_FILE = ROOT / "academic_data.json"
-OUT_FILE = ROOT / "docs" / "data.js"
+OUT_FILE = ROOT / "data.js"
 
 
 def main() -> None:
